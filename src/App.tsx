@@ -4,10 +4,15 @@ import {useState} from "react";
 import Log from "./components/Log/Log.tsx";
 import {Turn} from "./interfaces.ts";
 import {WINNING_COMBINATIONS} from "./data.ts";
-import {GameBoardData, GameBoardSquare} from "./types.ts";
+import {GameBoardData, GameBoardSquare, Players} from "./types.ts";
 import GameOver from "./components/GameOver/GameOver.tsx";
 
-const initialGameBoard: GameBoardData = [
+const PLAYERS: Players = {
+    X: 'Player 1',
+    O: 'Player 2'
+}
+
+const INITIAL_GAME_BOARD: GameBoardData = [
     [null, null, null],
     [null, null, null],
     [null, null, null]
@@ -23,25 +28,8 @@ function deriveActivePlayer(gameTurns: Turn[]) {
     return currentPlayer
 }
 
-function App() {
-    const [gameTurns, setGameTurns] = useState<Turn[]>([])
-    const [players, setPlayers] = useState<{X: string, O:string}>({
-        X: 'Alex',
-        O: 'Bob'
-    })
-
-    const activePlayer = deriveActivePlayer(gameTurns)
-
+function deriveWinner(gameBoard: GameBoardData, players: Players) {
     let winner;
-    const gameBoard: GameBoardData = [...initialGameBoard.map(array => [...array])]
-    const hasDraw = gameTurns.length === 9 && !winner
-
-    for (const turn of gameTurns) {
-        const { square, player } = turn
-        const { row, cell } = square
-
-        gameBoard[row][cell] = player
-    }
 
     for (const combination of WINNING_COMBINATIONS) {
         const firstSquareSymbol: GameBoardSquare = gameBoard[combination[0].row][combination[0].cell]
@@ -56,6 +44,32 @@ function App() {
             winner = players[firstSquareSymbol as keyof typeof players]
         }
     }
+
+    return winner;
+}
+
+function deriveGameBoard(gameTurns: Turn[]) {
+    const gameBoard: GameBoardData = [...INITIAL_GAME_BOARD.map(array => [...array])]
+
+    for (const turn of gameTurns) {
+        const { square, player } = turn
+        const { row, cell } = square
+
+        gameBoard[row][cell] = player
+    }
+
+    return gameBoard;
+}
+
+function App() {
+    const [gameTurns, setGameTurns] = useState<Turn[]>([])
+    const [players, setPlayers] = useState<Players>(PLAYERS)
+
+    const activePlayer = deriveActivePlayer(gameTurns)
+    const gameBoard = deriveGameBoard(gameTurns)
+
+    const winner = deriveWinner(gameBoard, players)
+    const hasDraw = gameTurns.length === 9 && !winner
 
     function handleSelectSquare(rowIndex: number, cellIndex: number) {
         setGameTurns((prevTurns: Turn[]) => {
@@ -89,13 +103,13 @@ function App() {
             <div id="game-container">
                 <ol id="players" className={"highlight-player"}>
                     <Player
-                        name="Alex"
+                        name={PLAYERS.X}
                         symbol="X"
                         isActive={activePlayer === 'X'}
                         onChangeName={handlePlayerNameChange}
                     />
                     <Player
-                        name="Bob"
+                        name={PLAYERS.O}
                         symbol="O"
                         isActive={activePlayer === 'O'}
                         onChangeName={handlePlayerNameChange}
