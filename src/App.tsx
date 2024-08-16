@@ -4,18 +4,24 @@ import {useState} from "react";
 import Log from "./components/Log/Log.tsx";
 import {Turn} from "./interfaces.ts";
 
+function deriveActivePlayer(gameTurns: Turn[]) {
+    let currentPlayer: string = 'X'
+
+    if(gameTurns.length > 0 && gameTurns[0].player === 'X') {
+        currentPlayer = 'O'
+    }
+
+    return currentPlayer
+}
+
 function App() {
-    const [activePlayer, setActivePlayer] = useState('X')
     const [gameTurns, setGameTurns] = useState<Turn[]>([])
 
-    function handleSelectSquare(rowIndex: number, cellIndex: number) {
-        setActivePlayer((currentActivePlayer: string) => currentActivePlayer === 'X' ? 'O' : 'X')
-        setGameTurns((prevTurns: Turn[]) => {
-            let currentPlayer: string = 'X'
+    const activePlayer = deriveActivePlayer(gameTurns)
 
-            if(prevTurns.length > 0 && prevTurns[0].player === 'X') {
-                currentPlayer = 'O'
-            }
+    function handleSelectSquare(rowIndex: number, cellIndex: number) {
+        setGameTurns((prevTurns: Turn[]) => {
+            const currentPlayer = deriveActivePlayer(prevTurns)
 
             const updatedTurns: Turn[] = [
                 {
