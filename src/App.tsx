@@ -1,9 +1,16 @@
+import Player from "./components/Player/Player.tsx";
+
 function App() {
 
   return (
-    <>
-        <h1>Coming soon...</h1>
-    </>
+    <main>
+        <div id="game-container">
+            <ol id="players">
+                <Player name="Alex" symbol="X" />
+                <Player name="Bob" symbol="O" />
+            </ol>
+        </div>
+    </main>
   )
 }
 
