@@ -27,10 +27,11 @@ export default function GameBoard(
                 return (
                     <li key={rowIndex}>
                         <ol>
-                            {row.map((cell, cellIndex: number) => (
+                            {row.map((cell: string | null, cellIndex: number) => (
                                 <li key={cellIndex}>
                                     <button
                                         onClick={() => props.onSelectSquare(rowIndex, cellIndex)}
+                                        disabled={cell !== null}
                                     >
                                         {cell}
                                     </button>
