@@ -3,7 +3,8 @@ import React, {useState} from "react";
 export default function Player(
     props:{
         name:string,
-        symbol:string
+        symbol:string,
+        isActive:boolean
     }
 ) {
     const [isEditing, setIsEditing] = useState(false);
@@ -22,7 +23,7 @@ export default function Player(
     }
 
     return (
-        <li>
+        <li className={props.isActive ? "active" : ''}>
             <span className="player">
                 {
                     isEditing ?

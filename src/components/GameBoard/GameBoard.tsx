@@ -6,15 +6,22 @@ const initialGameBoard: (string | null)[][] = [
     [null, null, null]
 ]
 
-export default function GameBoard() {
+export default function GameBoard(
+    props: {
+        onSelectSquare: () => void,
+        activePlayer: string
+    }
+) {
     const [gameBoard, setGameBoard] = useState(initialGameBoard)
 
     function handleMatrix(rowIndex: number, cellIndex: number) {
         setGameBoard((prevGameBoard) => {
             const newGameBoard = [...prevGameBoard.map(innerArray => [...innerArray])]
-            newGameBoard[rowIndex][cellIndex] = 'X'
+            newGameBoard[rowIndex][cellIndex] = props.activePlayer
             return newGameBoard
         })
+
+        props.onSelectSquare()
     }
 
     return(
