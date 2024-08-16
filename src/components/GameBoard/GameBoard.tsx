@@ -1,29 +1,14 @@
-import {Turn} from "../../interfaces.ts";
-
-const initialGameBoard: (string | null)[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-]
+import {GameBoardData, GameBoardSquare} from "../../types.ts";
 
 export default function GameBoard(
     props: {
         onSelectSquare: (rowIndex: number, cellIndex: number) => void,
-        turns: Turn[]
+        board: GameBoardData
     }
 ) {
-    const gameBoard = initialGameBoard;
-
-    for (const turn of props.turns) {
-        const { square, player } = turn;
-        const { row, cell } = square;
-
-        gameBoard[row][cell] = player;
-    }
-
     return(
         <ol id="game-board">
-            {gameBoard.map((row, rowIndex: number)  => {
+            {props.board.map((row: GameBoardSquare[], rowIndex: number)  => {
                 return (
                     <li key={rowIndex}>
                         <ol>
