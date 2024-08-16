@@ -25,6 +25,10 @@ function deriveActivePlayer(gameTurns: Turn[]) {
 
 function App() {
     const [gameTurns, setGameTurns] = useState<Turn[]>([])
+    const [players, setPlayers] = useState<{X: string, O:string}>({
+        X: 'Alex',
+        O: 'Bob'
+    })
 
     const activePlayer = deriveActivePlayer(gameTurns)
 
@@ -39,7 +43,6 @@ function App() {
         gameBoard[row][cell] = player
     }
 
-
     for (const combination of WINNING_COMBINATIONS) {
         const firstSquareSymbol: GameBoardSquare = gameBoard[combination[0].row][combination[0].cell]
         const secondSquareSymbol: GameBoardSquare = gameBoard[combination[1].row][combination[1].cell]
@@ -50,7 +53,7 @@ function App() {
             firstSquareSymbol === secondSquareSymbol &&
             firstSquareSymbol === thirdSquareSymbol
         ) {
-            winner = firstSquareSymbol
+            winner = players[firstSquareSymbol as keyof typeof players]
         }
     }
 
@@ -74,12 +77,29 @@ function App() {
         setGameTurns([])
     }
 
+    function handlePlayerNameChange(player: string, name: string) {
+        setPlayers((prevPlayer) => ({
+            ...prevPlayer,
+            [player]: name
+        }))
+    }
+
     return (
         <main>
             <div id="game-container">
                 <ol id="players" className={"highlight-player"}>
-                    <Player name="Alex" symbol="X" isActive={activePlayer === 'X'} />
-                    <Player name="Bob" symbol="O" isActive={activePlayer === 'O'} />
+                    <Player
+                        name="Alex"
+                        symbol="X"
+                        isActive={activePlayer === 'X'}
+                        onChangeName={handlePlayerNameChange}
+                    />
+                    <Player
+                        name="Bob"
+                        symbol="O"
+                        isActive={activePlayer === 'O'}
+                        onChangeName={handlePlayerNameChange}
+                    />
                 </ol>
                 {(winner || hasDraw) ? <GameOver winner={winner} onResetGame={handleRestart} /> : ''}
                 <GameBoard

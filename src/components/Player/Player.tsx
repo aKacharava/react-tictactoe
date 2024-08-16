@@ -5,6 +5,7 @@ export default function Player(
         name:string,
         symbol:string,
         isActive:boolean
+        onChangeName:(symbol:string, name:string) => void
     }
 ) {
     const [isEditing, setIsEditing] = useState(false);
@@ -14,6 +15,10 @@ export default function Player(
 
     function handleEdit() {
         setIsEditing((editing: boolean) => !editing)
+
+        if (isEditing) {
+            props.onChangeName(props.symbol, playerName)
+        }
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
