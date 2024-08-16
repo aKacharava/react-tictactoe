@@ -7,7 +7,7 @@ import {WINNING_COMBINATIONS} from "./data.ts";
 import {GameBoardData, GameBoardSquare} from "./types.ts";
 import GameOver from "./components/GameOver/GameOver.tsx";
 
-const initialGameBoard: (string | null)[][] = [
+const initialGameBoard: GameBoardData = [
     [null, null, null],
     [null, null, null],
     [null, null, null]
@@ -29,7 +29,7 @@ function App() {
     const activePlayer = deriveActivePlayer(gameTurns)
 
     let winner;
-    const gameBoard: GameBoardData = initialGameBoard
+    const gameBoard: GameBoardData = [...initialGameBoard.map(array => [...array])]
     const hasDraw = gameTurns.length === 9 && !winner
 
     for (const turn of gameTurns) {
@@ -70,6 +70,10 @@ function App() {
         })
     }
 
+    function handleRestart() {
+        setGameTurns([])
+    }
+
     return (
         <main>
             <div id="game-container">
@@ -77,7 +81,7 @@ function App() {
                     <Player name="Alex" symbol="X" isActive={activePlayer === 'X'} />
                     <Player name="Bob" symbol="O" isActive={activePlayer === 'O'} />
                 </ol>
-                {(winner || hasDraw) ? <GameOver winner={winner} /> : ''}
+                {(winner || hasDraw) ? <GameOver winner={winner} onResetGame={handleRestart} /> : ''}
                 <GameBoard
                     onSelectSquare={handleSelectSquare}
                     board={gameBoard}

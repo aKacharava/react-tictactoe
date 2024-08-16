@@ -1,6 +1,7 @@
 export default function GameOver(
     props: {
-        winner: string|undefined
+        winner: string|undefined,
+        onResetGame: () => void
     }
 ) {
     return(
@@ -11,6 +12,7 @@ export default function GameOver(
                 <p>You have won, {props.winner}!</p> :
                     <p>It's a draw!</p>
             }
+            <button onClick={props.onResetGame}>Rematch!</button>
         </div>
     )
 }
