@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {Turn} from "../../interfaces.ts";
 
 const initialGameBoard: (string | null)[][] = [
     [null, null, null],
@@ -8,20 +8,17 @@ const initialGameBoard: (string | null)[][] = [
 
 export default function GameBoard(
     props: {
-        onSelectSquare: () => void,
-        activePlayer: string
+        onSelectSquare: (rowIndex: number, cellIndex: number) => void,
+        turns: Turn[]
     }
 ) {
-    const [gameBoard, setGameBoard] = useState(initialGameBoard)
+    const gameBoard = initialGameBoard;
 
-    function handleMatrix(rowIndex: number, cellIndex: number) {
-        setGameBoard((prevGameBoard) => {
-            const newGameBoard = [...prevGameBoard.map(innerArray => [...innerArray])]
-            newGameBoard[rowIndex][cellIndex] = props.activePlayer
-            return newGameBoard
-        })
+    for (const turn of props.turns) {
+        const { square, player } = turn;
+        const { row, cell } = square;
 
-        props.onSelectSquare()
+        gameBoard[row][cell] = player;
     }
 
     return(
@@ -32,7 +29,11 @@ export default function GameBoard(
                         <ol>
                             {row.map((cell, cellIndex: number) => (
                                 <li key={cellIndex}>
-                                    <button onClick={() => handleMatrix(rowIndex, cellIndex)}>{cell}</button>
+                                    <button
+                                        onClick={() => props.onSelectSquare(rowIndex, cellIndex)}
+                                    >
+                                        {cell}
+                                    </button>
                                 </li>
                             ))}
                         </ol>
